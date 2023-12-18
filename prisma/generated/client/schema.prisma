@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  User
+  Admin
+}
+
+model User {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  username        String  @unique
+  firstname       String
+  lastname        String
+
+  email           String  @unique
+  emailVerified   DateTime?
+
+  verifyToken       String? 
+  verifyTokenExpiry DateTime?
+
+  passwordRecoverCode  String?
+
+  phone           String  @unique
+  hashedPassword  String
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+
+  blocked         Boolean @default(false)
+  role            Role @default(User)
+  balance         Float @default(0)
+
+  FillRequests    FillRequest[]
+  WithdrawRequests WithdrawRequests[]
+}
+
+
+model FillRequest {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+
+
+  userId          String
+  user            User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount         Float
+  
+  status          FillStatus @default(Waiting)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model WithdrawRequests {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId          String
+  user            User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount          Float
+  status          FillStatus @default(Waiting)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+
+enum FillStatus {
+  Accepted
+  Declined
+  Waiting
+}
+
+
+model Blog {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  image           String
+  theme           String[]
+  title           String
+  content         String
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
