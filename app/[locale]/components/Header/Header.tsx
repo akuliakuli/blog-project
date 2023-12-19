@@ -4,8 +4,6 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import Avatar from './Auth/Avatar'
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import Languages from './Languages'
-import { useLocale } from 'next-intl'
 interface HeaderProps {
   currentUser: any,
   fixed?: boolean,
@@ -15,7 +13,6 @@ function Header({
   fixed
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
-  const locale = useLocale();
   return (
     <>
       {/* Web */}
@@ -32,7 +29,6 @@ function Header({
                 <Link href={"/university"}>University</Link>
             </div>
         </div>
-        <Languages locale={locale}/>
         <div className='hidden md:block'>
           {currentUser ? (
           <Avatar currentUser={currentUser}/>
@@ -57,7 +53,6 @@ function Header({
               }}>
                 {!open ? <AiOutlineMenu size={25}/> : <AiOutlineClose size={25}/>}
             </button>
-            <Languages locale={locale}/>
             <div className='flex justify-center items-center'>
               {currentUser ? (
                 <Avatar currentUser={currentUser}/>
